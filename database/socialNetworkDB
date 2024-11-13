@@ -1,0 +1,107 @@
+# Спроектировать базу(ы) данных для социальной сети ВКонтакте:
+# •	анкеты людей (имя, описание, фото, город, интересы);
+# •	посты (описание, медиа, хэштеги, лайки, просмотры, комментарии);
+# •	личные сообщения и чаты (только текст и прочитанность сообщений);
+# •	отношения (друзья, подписчики, любовные отношения);
+# •	медиа (фото, аудио, видео).
+# https://dbdiagram.io/d
+
+Table user{
+  user_id integer
+  username varchar
+  photoUrl varchar
+  biography text
+  city varchar
+  created_at timestamp
+}
+
+Table user_hobby{
+  user_id integer
+  hobby_id integer
+}
+
+Table hobby{
+  hobby_id integer
+  hobby_name varchar
+  hobby_describe text
+}
+
+Table Post{
+  post_id integer [primary key]
+  user_id integer 
+  content text
+  mediatype varchar
+  mediaUrl varchar
+}
+
+Table Comments{
+  comments_id integer [primary key]
+  user_id integer
+  post_id integer
+  content text
+}
+
+Table HashTags{
+  hashTag_id integer [primary key]
+  post_id integer
+  name integer
+}
+
+Table CountView{
+  post_id integer [primary key]
+  count integer
+}
+
+Table FriendShipType{
+  frienshipType varchar [primary key]
+}
+
+Table FriendShip{
+  friendShip_id integer [primary key]
+  user1_id integer
+  user2_id integer
+  frienshipType varchar
+}
+
+Table Message{
+  message_id integer [primary key]
+  sender_id integer
+  receiver_id integer
+  content text
+  isReaded bool
+}
+
+Table Media{
+  media_id integer [primary key]
+  user_id integer
+  mediaType varchar
+  mediaUrl varchar
+}
+
+Ref: "user"."username" < "user_hobby"."user_id"
+
+Ref: "user"."user_id" < "user_hobby"."user_id"
+
+Ref: "hobby"."hobby_id" < "user_hobby"."hobby_id"
+
+Ref: "Post"."user_id" < "user"."user_id"
+
+Ref: "CountView"."post_id" < "Post"."post_id"
+
+Ref: "HashTags"."post_id" < "Post"."post_id"
+
+Ref: "Comments"."post_id" < "Post"."post_id"
+
+Ref: "Comments"."user_id" < "user"."user_id"
+
+Ref: "user"."user_id" < "FriendShip"."user1_id"
+
+Ref: "user"."user_id" < "FriendShip"."user2_id"
+
+Ref: "user"."user_id" < "Message"."sender_id"
+
+Ref: "user"."user_id" < "Message"."receiver_id"
+
+Ref: "user"."user_id" < "Media"."user_id"
+
+Ref: "FriendShipType"."frienshipType" < "FriendShip"."frienshipType"
